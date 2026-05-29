@@ -5,3 +5,7 @@
 ## Add tailwind css to the project, remove unused css and give theme suggestions.
 
 ## Update the logic of pagination on scroll
+
+## Add suppor redux and move the api call from useEffect to redux.
+
+## Suggest some chart library to show Pie chart.

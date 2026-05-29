@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent } from "react";
 import { List, type RowComponentProps } from "react-window";
-import apiClient from "../api/axiosClient";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../store";
+import { fetchEmployeesPage } from "../store/employeesSlice";
 
 export type Employee = {
   id: number;
@@ -16,59 +18,28 @@ export type Employee = {
   updated_at: string;
 };
 
-type EmployeeResponse = {
-  data: Employee[];
-  nextCursor: number | null;
-  hasMore: boolean;
-};
-
 const ROW_HEIGHT = 52;
 const LIST_HEIGHT = 560;
 const LIMIT = 20;
 
 function EmployeeTable() {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { employees, nextCursor, hasMore, loading, error } = useSelector(
+    (s: RootState) => s.employees,
+  );
+
   const [filter, setFilter] = useState("");
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const [nextCursor, setNextCursor] = useState<number | null>(null);
-  const [hasMore, setHasMore] = useState(true);
-
   useEffect(() => {
-    fetchEmployees();
-  }, []);
-
-  const fetchEmployees = async (cursor?: number | null) => {
-    console.log("abcd cursor", cursor);
-    try {
-      setLoading(true);
-
-      const response = await apiClient.get<EmployeeResponse>("/employee", {
-        params: {
-          cursor,
-          limit: LIMIT,
-        },
-      });
-
-      const payload = response.data;
-      setEmployees((prev) => [...prev, ...payload.data]);
-
-      setNextCursor(payload.nextCursor);
-      setHasMore(payload.hasMore);
-    } catch (err) {
-      console.error("API Error:", err);
-      setError((err as Error)?.message ?? "Unable to load employee data.");
-    } finally {
-      setLoading(false);
+    if (employees.length === 0) {
+      dispatch(fetchEmployeesPage({ cursor: null, limit: LIMIT }));
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadMore = async () => {
     if (!hasMore || loading) return;
-
-    await fetchEmployees(nextCursor);
+    await dispatch(fetchEmployeesPage({ cursor: nextCursor, limit: LIMIT }));
   };
 
   const normalizedFilter = filter.trim().toLowerCase();
@@ -175,7 +146,6 @@ function EmployeeTable() {
             rowProps={{}}
             onRowsRendered={({ stopIndex }) => {
               const threshold = 5;
-
               if (
                 stopIndex >= filteredEmployees.length - threshold &&
                 hasMore &&
