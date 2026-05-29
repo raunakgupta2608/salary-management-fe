@@ -1,23 +1,27 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+:root {
+  --text: #4b453d;
+  --text-h: #1f1a14;
+  --bg: #f6eee3;
+  --surface: #fff8f0;
+  --border: rgba(162, 132, 101, 0.3);
+  --code-bg: #efe4d7;
+  --accent: #c18f69;
+  --accent-bg: rgba(193, 143, 105, 0.18);
+  --accent-border: rgba(193, 143, 105, 0.35);
+  --social-bg: rgba(194, 155, 110, 0.18);
+  --shadow: rgba(84, 64, 49, 0.08) 0 18px 55px -35px;
+
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -32,38 +36,46 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+    --text: #4b453d;
+    --text-h: #1f1a14;
+    --bg: #efe4d7;
+    --border: rgba(162, 132, 101, 0.3);
+    --code-bg: #f2e7d8;
+    --accent: #c18f69;
+    --accent-bg: rgba(193, 143, 105, 0.18);
+    --accent-border: rgba(193, 143, 105, 0.35);
+    --social-bg: rgba(194, 155, 110, 0.18);
+    --shadow: rgba(84, 64, 49, 0.08) 0 18px 55px -35px;
   }
 
   #social .button-icon {
-    filter: invert(1) brightness(2);
+    filter: none;
   }
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(193, 143, 105, 0.1),
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(251, 207, 175, 0.18),
+      transparent 18%
+    ),
+    linear-gradient(180deg, #f6eee3 0%, #f2e7d5 100%);
 }
 
 h1,
@@ -108,4 +120,201 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+.app-shell {
+  width: min(1126px, 100%);
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.error-message {
+  color: #fb7185;
+  margin: 0 0 16px;
+}
+
+.employee-table-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 5%;
+  background: var(--surface);
+  border: 1px solid rgba(162, 132, 101, 0.18);
+  border-radius: 1.75rem;
+  box-shadow: 0 18px 45px rgba(84, 64, 49, 0.06);
+}
+
+.employee-table-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.employee-table-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text-h);
+  min-width: 220px;
+}
+
+.employee-table-controls input,
+.employee-table-controls select {
+  width: 100%;
+  min-width: 220px;
+  padding: 12px 16px;
+  border: 1px solid rgba(162, 132, 101, 0.25);
+  border-radius: 16px;
+  font: inherit;
+  color: var(--text-h);
+  background: #f8efe3;
+}
+
+.employee-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.employee-pagination button {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.employee-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.table-wrapper {
+  border: 1px solid rgba(162, 132, 101, 0.2);
+  border-radius: 22px;
+  overflow: hidden;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+}
+
+.employee-list-container {
+  flex: 0 0 auto;
+  height: 340px;
+  overflow: hidden;
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.employee-table th,
+.employee-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(162, 132, 101, 0.18);
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.employee-table th {
+  background: #f5e6d8;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.employee-table tbody tr:nth-child(even) {
+  background: #fbf1e7;
+}
+
+.table-body {
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.employee-table-summary {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+@media (max-width: 880px) {
+  .employee-table-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .employee-table-controls label,
+  .employee-table-controls select,
+  .employee-table-controls input {
+    min-width: auto;
+    width: 100%;
+  }
+}
+
+.employee-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  box-sizing: border-box;
+  transition: background 0.2s ease;
+}
+
+.employee-row:hover {
+  background: rgba(193, 143, 105, 0.12);
+}
+
+.employee-row--header {
+  background: #f5e6d8;
+  color: var(--text-h);
+  font-weight: 700;
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.employee-cell {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employee-cell--name {
+  flex: 1.5;
+}
+
+.employee-cell--job {
+  flex: 2.2;
+}
+
+.employee-cell--department,
+.employee-cell--country,
+.employee-cell--status,
+.employee-cell--salary {
+  flex: 1;
+}
+
+.employee-cell--email {
+  flex: 2.4;
+}
+
+.employee-list {
+  overflow: auto;
 }
