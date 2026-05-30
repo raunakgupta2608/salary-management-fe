@@ -1,9 +1,14 @@
 import { useState } from "react";
-import EmployeeTable from "./components/EmployeeTable";
-import AnalyticsChart from "./components/AnalyticsChart";
+import EmployeeTable from "./pages/EmployeeTable";
+import AnalyticsChart from "./pages/AnalyticsChart";
+import Insights from "./pages/analytics/Insights";
+
+const HOME = "home";
+const INSIGHTS = "insights";
+const ANALYTICS = "analytics";
 
 function App() {
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState(HOME);
 
   return (
     <main className="min-h-screen bg-[#f5ede4] text-slate-900">
@@ -16,9 +21,9 @@ function App() {
 
             <div className="flex bg-[#f5e6d8] rounded-[20px] border-0">
               <button
-                onClick={() => setActiveTab("home")}
+                onClick={() => setActiveTab(HOME)}
                 className={`px-4 w-[250px] py-2 text-sm font-medium transition-colors bg-[#f5e6d8] ${
-                  activeTab === "home"
+                  activeTab === HOME
                     ? "bg-white text-slate-950 border-b-2 border-amber-600 rounded-[20px]"
                     : "text-slate-600 hover:text-slate-950"
                 }`}
@@ -27,21 +32,31 @@ function App() {
               </button>
 
               <button
-                onClick={() => setActiveTab("analytics")}
+                onClick={() => setActiveTab(ANALYTICS)}
                 className={`px-4 w-[250px] py-2 text-sm font-medium transition-colors bg-[#f5e6d8] ${
-                  activeTab === "analytics"
+                  activeTab === ANALYTICS
                     ? "bg-white text-slate-950 border-b-2 border-amber-600 rounded-[20px]"
                     : "text-slate-600 hover:text-slate-950"
                 }`}
               >
                 Analytics
               </button>
+              <button
+                onClick={() => setActiveTab(INSIGHTS)}
+                className={`px-4 w-[250px] py-2 text-sm font-medium transition-colors bg-[#f5e6d8] ${
+                  activeTab === INSIGHTS
+                    ? "bg-white text-slate-950 border-b-2 border-amber-600 rounded-[20px]"
+                    : "text-slate-600 hover:text-slate-950"
+                }`}
+              >
+                Insights
+              </button>
             </div>
           </div>
         </section>
 
         <section className="rounded-[2rem] border border-amber-200 bg-white p-6 shadow-[0_20px_50px_-30px_rgba(120,87,42,0.22)]">
-          {activeTab === "home" && (
+          {activeTab === HOME && (
             <div>
               <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="max-w-xl text-sm text-slate-600">
@@ -53,9 +68,15 @@ function App() {
             </div>
           )}
 
-          {activeTab === "analytics" && (
+          {activeTab === ANALYTICS && (
             <div className="py-6">
               <AnalyticsChart />
+            </div>
+          )}
+
+          {activeTab === INSIGHTS && (
+            <div className="py-6">
+              <Insights />
             </div>
           )}
         </section>

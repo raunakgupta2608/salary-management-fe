@@ -1,6 +1,7 @@
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import type { RootState } from "../store";
+import type { Employee } from "../store/employeesSlice";
 import { useSelector } from "react-redux";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -19,12 +20,15 @@ export default function AnalyticsChart() {
   );
 
   // Aggregate total salary by department
-  const totalsByDept = employees.reduce<Record<string, number>>((acc, emp) => {
-    const dept = emp.department || "Unknown";
-    const salary = Number(emp.salary) || 0;
-    acc[dept] = (acc[dept] || 0) + salary;
-    return acc;
-  }, {});
+  const totalsByDept = employees.reduce<Record<string, number>>(
+    (acc, emp: Employee) => {
+      const dept = emp.department || "Unknown";
+      const salary = Number(emp.salary) || 0;
+      acc[dept] = (acc[dept] || 0) + salary;
+      return acc;
+    },
+    {},
+  );
 
   const labels = Object.keys(totalsByDept);
   const values = labels.map((l) => Math.round(totalsByDept[l]));

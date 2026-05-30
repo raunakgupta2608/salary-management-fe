@@ -1,190 +1,168 @@
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import apiClient from "../api/axiosClient";
-import EmployeeTable from "../components/EmployeeTable";
 
-vi.mock("react-window", () => ({
-  List: ({
-    rowCount,
-    rowComponent: Row,
-    onRowsRendered,
-  }: {
-    rowCount: number;
-    rowComponent: any;
-    onRowsRendered?: (props: { stopIndex: number }) => void;
-  }) => {
-    onRowsRendered?.({ stopIndex: rowCount - 1 });
+const mockedDispatch = vi.fn();
 
-    return (
-      <div data-testid="mock-list">
-        {Array.from({ length: rowCount }).map((_, index) => (
-          <Row key={index} index={index} style={{}} />
-        ))}
-      </div>
-    );
-  },
+vi.mock("react-redux", () => {
+  return {
+    useDispatch: () => mockedDispatch,
+    useSelector: (selector: any) => selector(mockStore),
+  };
+});
+
+vi.mock("../store/employeesSlice", () => ({
+  fetchEmployeesPage: vi.fn(() => ({ type: "employees/fetchEmployeesPage" })),
 }));
 
-vi.mock("../api/axiosClient", () => ({
-  default: {
-    get: vi.fn(),
-  },
-}));
+vi.mock("react-window", () => {
+  return {
+    List: ({ rowCount, rowComponent: Row, onRowsRendered }: any) => {
+      return (
+        <div>
+          {Array.from({ length: rowCount }).map((_, index) => (
+            <Row key={index} index={index} style={{}} />
+          ))}
 
-const mockedGet = vi.mocked(apiClient.get);
+          {/* trigger infinite scroll manually */}
+          <button
+            onClick={() =>
+              onRowsRendered({
+                overscanStartIndex: 0,
+                overscanStopIndex: rowCount - 1,
+                startIndex: 0,
+                stopIndex: rowCount - 1,
+              })
+            }
+          >
+            trigger
+          </button>
+        </div>
+      );
+    },
+  };
+});
+
+import EmployeeTable from "../pages/EmployeeTable";
+import { fetchEmployeesPage } from "../store/employeesSlice";
 
 const mockEmployees = [
   {
     id: 1,
-    full_name: "John Doe",
-    job_title: "Software Engineer",
-    country: "USA",
+    full_name: "Alice Johnson",
+    job_title: "Engineer",
+    country: "India",
     salary: "100000",
-    department: "Engineering",
-    email: "john@example.com",
+    department: "Tech",
+    email: "alice@test.com",
     employment_status: "Active",
     created_at: "",
     updated_at: "",
   },
   {
     id: 2,
-    full_name: "Jane Smith",
-    job_title: "Product Manager",
-    country: "India",
-    salary: "120000",
-    department: "Product",
-    email: "jane@example.com",
-    employment_status: "Inactive",
+    full_name: "Bob Smith",
+    job_title: "Manager",
+    country: "USA",
+    salary: "200000",
+    department: "HR",
+    email: "bob@test.com",
+    employment_status: "Active",
     created_at: "",
     updated_at: "",
   },
 ];
 
+let mockStore: any;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+
+  mockStore = {
+    employees: {
+      employees: [],
+      nextCursor: null,
+      hasMore: true,
+      loading: false,
+      error: "",
+    },
+  };
+});
+
 describe("EmployeeTable", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+  it("dispatches initial fetch when employees are empty", () => {
+    render(<EmployeeTable />);
+
+    expect(mockedDispatch).toHaveBeenCalledWith(
+      fetchEmployeesPage({ cursor: null, limit: 20 }),
+    );
   });
 
-  it("renders employees after API call", async () => {
-    mockedGet.mockResolvedValueOnce({
-      data: {
-        data: mockEmployees,
-        nextCursor: null,
-        hasMore: false,
-      },
-    });
+  it("renders employees correctly", () => {
+    mockStore.employees.employees = mockEmployees;
 
     render(<EmployeeTable />);
 
-    expect(mockedGet).toHaveBeenCalledWith("/employee", {
-      params: {
-        cursor: undefined,
-        limit: 20,
-      },
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText("John Doe")).toBeInTheDocument();
-      expect(screen.getByText("Jane Smith")).toBeInTheDocument();
-    });
+    expect(screen.getByText("Alice Johnson")).toBeInTheDocument();
+    expect(screen.getByText("Bob Smith")).toBeInTheDocument();
+    expect(screen.getByText("Engineer")).toBeInTheDocument();
   });
 
-  it("filters employees based on search input", async () => {
-    mockedGet.mockResolvedValueOnce({
-      data: {
-        data: mockEmployees,
-        nextCursor: null,
-        hasMore: false,
-      },
-    });
+  it("filters employees by search input", () => {
+    mockStore.employees.employees = mockEmployees;
 
     render(<EmployeeTable />);
 
-    await waitFor(() => {
-      expect(screen.getByText("John Doe")).toBeInTheDocument();
-    });
-
-    const searchInput = screen.getByPlaceholderText(
-      "Name, job, country, department, email",
+    const input = screen.getByPlaceholderText(
+      /name, job, country, department, email/i,
     );
 
-    fireEvent.change(searchInput, {
-      target: { value: "Jane" },
-    });
+    fireEvent.change(input, { target: { value: "india" } });
 
-    expect(screen.queryByText("John Doe")).not.toBeInTheDocument();
-    expect(screen.getByText("Jane Smith")).toBeInTheDocument();
+    expect(screen.getByText("Alice Johnson")).toBeInTheDocument();
+    expect(screen.queryByText("Bob Smith")).not.toBeInTheDocument();
   });
 
-  it("shows error message when API fails", async () => {
-    mockedGet.mockRejectedValue(new Error("Network Error"));
+  it("shows error message when API fails", () => {
+    mockStore.employees.error = "API failed";
 
     render(<EmployeeTable />);
 
-    expect(await screen.findByText("Network Error")).toBeInTheDocument();
+    expect(screen.getByText("API failed")).toBeInTheDocument();
   });
 
-  it("loads more employees when scrolling reaches threshold", async () => {
-    mockedGet
-      .mockResolvedValueOnce({
-        data: {
-          data: [mockEmployees[0]],
-          nextCursor: 2,
-          hasMore: true,
-        },
-      })
-      .mockResolvedValueOnce({
-        data: {
-          data: [mockEmployees[1]],
-          nextCursor: null,
-          hasMore: false,
-        },
-      });
+  it("shows correct employee count summary", () => {
+    mockStore.employees.employees = mockEmployees;
 
     render(<EmployeeTable />);
 
-    await waitFor(() => {
-      expect(screen.getByText("John Doe")).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText("Jane Smith")).toBeInTheDocument();
-    });
-
-    expect(mockedGet).toHaveBeenCalledTimes(2);
+    expect(screen.getByText(/Showing 2 employees/)).toBeInTheDocument();
   });
 
-  it("shows no more employees message", async () => {
-    mockedGet.mockResolvedValueOnce({
-      data: {
-        data: mockEmployees,
-        nextCursor: null,
-        hasMore: false,
-      },
-    });
+  it("shows singular summary when one employee", () => {
+    mockStore.employees.employees = [mockEmployees[0]];
 
     render(<EmployeeTable />);
 
-    await waitFor(() => {
-      expect(
-        screen.getByText("No more employees to load."),
-      ).toBeInTheDocument();
-    });
+    expect(screen.getByText(/Showing 1 employee/)).toBeInTheDocument();
   });
 
-  it("shows correct employee count", async () => {
-    mockedGet.mockResolvedValueOnce({
-      data: {
-        data: mockEmployees,
-        nextCursor: null,
-        hasMore: false,
-      },
-    });
+  it("triggers loadMore when scrolling near end", () => {
+    mockStore.employees.employees = mockEmployees;
+    mockStore.employees.hasMore = true;
 
     render(<EmployeeTable />);
 
-    await waitFor(() => {
-      expect(screen.getByText("Showing 2 employees.")).toBeInTheDocument();
-    });
+    fireEvent.click(screen.getByText("trigger"));
+
+    expect(mockedDispatch).toHaveBeenCalled();
+  });
+
+  it("shows no more employees message when hasMore is false", () => {
+    mockStore.employees.employees = mockEmployees;
+    mockStore.employees.hasMore = false;
+
+    render(<EmployeeTable />);
+
+    expect(screen.getByText("No more employees to load.")).toBeInTheDocument();
   });
 });
