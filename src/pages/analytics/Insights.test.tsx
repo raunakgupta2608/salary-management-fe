@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import Insights from "../pages/analytics/Insights";
+import Insights from "./Insights";
 
 vi.mock("./CountrySalarySummary", () => ({
   default: () => <div data-testid="country-salary-summary" />,

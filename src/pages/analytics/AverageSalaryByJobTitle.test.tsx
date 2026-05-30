@@ -9,8 +9,8 @@ vi.mock("../api/axiosClient", () => {
   };
 });
 
-import apiClient from "../api/axiosClient";
-import AverageSalaryByJobTitle from "../pages/analytics/AverageSalaryByJobTitle";
+import apiClient from "../../api/axiosClient";
+import AverageSalaryByJobTitle from "./AverageSalaryByJobTitle";
 
 const mockData = [
   { job_title: "Engineer", avg_salary: "100000", employee_count: 10 },
@@ -26,10 +26,11 @@ beforeEach(() => {
 });
 
 describe("AverageSalaryByJobTitle", () => {
-  it("shows loading state initially", async () => {
+  it("shows loading state initially", () => {
     mockedGet.mockReturnValue(new Promise(() => {}));
 
     render(<AverageSalaryByJobTitle />);
+
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
@@ -39,8 +40,8 @@ describe("AverageSalaryByJobTitle", () => {
     render(<AverageSalaryByJobTitle />);
 
     expect(await screen.findByText("Engineer")).toBeInTheDocument();
-    expect(screen.getByText("Manager")).toBeInTheDocument();
-    expect(screen.getByText("Analyst")).toBeInTheDocument();
+    expect(await screen.findByText("Manager")).toBeInTheDocument();
+    expect(await screen.findByText("Analyst")).toBeInTheDocument();
   });
 
   it("shows error message on API failure", async () => {
@@ -62,7 +63,7 @@ describe("AverageSalaryByJobTitle", () => {
 
     fireEvent.change(input, { target: { value: "eng" } });
 
-    expect(screen.getByText("Engineer")).toBeInTheDocument();
+    expect(await screen.findByText("Engineer")).toBeInTheDocument();
     expect(screen.queryByText("Manager")).not.toBeInTheDocument();
     expect(screen.queryByText("Analyst")).not.toBeInTheDocument();
   });
@@ -79,18 +80,20 @@ describe("AverageSalaryByJobTitle", () => {
     fireEvent.click(header);
     fireEvent.click(header);
 
+    // verify all still exist (sorting handled internally)
     expect(screen.getByText("Engineer")).toBeInTheDocument();
     expect(screen.getByText("Manager")).toBeInTheDocument();
+    expect(screen.getByText("Analyst")).toBeInTheDocument();
   });
 
-  it("sorts by job title", async () => {
+  it("sorts by job title column", async () => {
     mockedGet.mockResolvedValue({ data: mockData });
 
     render(<AverageSalaryByJobTitle />);
 
     await screen.findByText("Engineer");
 
-    const header = screen.getByText("Job title");
+    const header = screen.getByText("Job Title");
 
     fireEvent.click(header);
 
@@ -104,10 +107,24 @@ describe("AverageSalaryByJobTitle", () => {
 
     await screen.findByText("Engineer");
 
-    const header = screen.getByText("Avg salary");
+    const header = screen.getByText("Avg Salary");
 
     fireEvent.click(header);
 
     expect(screen.getByText("Manager")).toBeInTheDocument();
+  });
+
+  it("shows empty state when no results match filter", async () => {
+    mockedGet.mockResolvedValue({ data: mockData });
+
+    render(<AverageSalaryByJobTitle />);
+
+    await screen.findByText("Engineer");
+
+    const input = screen.getByPlaceholderText("Filter job titles");
+
+    fireEvent.change(input, { target: { value: "zzz" } });
+
+    expect(await screen.findByText("No job titles found")).toBeInTheDocument();
   });
 });

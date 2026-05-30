@@ -42,7 +42,7 @@ vi.mock("react-window", () => {
   };
 });
 
-import EmployeeTable from "../pages/EmployeeTable";
+import EmployeeTable from "./EmployeeTable";
 import { fetchEmployeesPage } from "../store/employeesSlice";
 
 const mockEmployees = [

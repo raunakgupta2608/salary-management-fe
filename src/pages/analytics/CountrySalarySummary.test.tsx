@@ -9,8 +9,8 @@ vi.mock("../api/axiosClient", () => {
   };
 });
 
-import apiClient from "../api/axiosClient";
-import CountrySalarySummary from "../pages/analytics/CountrySalarySummary";
+import apiClient from "../../api/axiosClient";
+import CountrySalarySummary from "./CountrySalarySummary";
 
 const mockData = [
   {
@@ -47,10 +47,11 @@ beforeEach(() => {
 });
 
 describe("CountrySalarySummary", () => {
-  it("shows loading state initially", async () => {
+  it("shows loading state initially", () => {
     mockedGet.mockReturnValue(new Promise(() => {}));
 
     render(<CountrySalarySummary />);
+
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
@@ -60,8 +61,8 @@ describe("CountrySalarySummary", () => {
     render(<CountrySalarySummary />);
 
     expect(await screen.findByText("India")).toBeInTheDocument();
-    expect(screen.getByText("USA")).toBeInTheDocument();
-    expect(screen.getByText("Germany")).toBeInTheDocument();
+    expect(await screen.findByText("USA")).toBeInTheDocument();
+    expect(await screen.findByText("Germany")).toBeInTheDocument();
   });
 
   it("shows error message on API failure", async () => {
@@ -83,7 +84,7 @@ describe("CountrySalarySummary", () => {
 
     fireEvent.change(input, { target: { value: "ind" } });
 
-    expect(screen.getByText("India")).toBeInTheDocument();
+    expect(await screen.findByText("India")).toBeInTheDocument();
     expect(screen.queryByText("USA")).not.toBeInTheDocument();
     expect(screen.queryByText("Germany")).not.toBeInTheDocument();
   });
@@ -97,11 +98,13 @@ describe("CountrySalarySummary", () => {
 
     const header = screen.getByText("Employees");
 
-    fireEvent.click(header); // toggle asc/desc
+    fireEvent.click(header);
     fireEvent.click(header);
 
+    // verify all still exist (order is handled internally)
     expect(screen.getByText("India")).toBeInTheDocument();
     expect(screen.getByText("USA")).toBeInTheDocument();
+    expect(screen.getByText("Germany")).toBeInTheDocument();
   });
 
   it("sorts by avg salary column", async () => {
@@ -143,6 +146,8 @@ describe("CountrySalarySummary", () => {
 
     fireEvent.change(input, { target: { value: "zzz" } });
 
-    expect(screen.getByText("No countries matched.")).toBeInTheDocument();
+    expect(
+      await screen.findByText("No countries matched."),
+    ).toBeInTheDocument();
   });
 });
