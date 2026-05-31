@@ -1,7 +1,7 @@
 import apiClient from "../../api/axiosClient";
-import { useAnalyticsData } from "../../hooks/useAnalyticsData";
 import { formatCurrency } from "../../utils/currency";
-import { DataTable, type Column } from "../../components/DataTable";
+import type { Column } from "../../components/DataTable";
+import { AnalyticsTableView } from "./AnalyticsTableView";
 
 type CountrySummary = {
   country: string;
@@ -54,72 +54,32 @@ const columns: Column<CountrySummary>[] = [
   },
 ];
 
-const CountrySalarySummary = () => {
-  const { rows, loading, error, filter, setFilter, toggleSort } =
-    useAnalyticsData<CountrySummary>({
-      fetcher: async () => {
+export default function CountrySalarySummary() {
+  return (
+    <AnalyticsTableView<CountrySummary>
+      fetcher={async () => {
         const res = await apiClient.get<CountrySummary[]>(
           "/analytics/country-salary-summary",
         );
 
         return Array.isArray(res.data) ? res.data : [];
-      },
-
-      defaultSortField: "avg_salary",
-
-      numericFields: [
+      }}
+      columns={columns}
+      defaultSortField="avg_salary"
+      numericFields={[
         "min_salary",
         "max_salary",
         "avg_salary",
         "employee_count",
-      ],
-
-      dateFields: ["updated_at"],
-
-      filterFn: (row, search) => row.country.toLowerCase().includes(search),
-    });
-
-  if (loading)
-    return (
-      <section className="employee-table-shell">
-        <div className="employee-table-summary">Loading...</div>
-      </section>
-    );
-
-  if (error)
-    return (
-      <section className="employee-table-shell">
-        <p className="error-message">{error}</p>
-      </section>
-    );
-
-  return (
-    <section className="employee-table-shell">
-      <div className="employee-table-controls">
-        <label>
-          Search:
-          <input
-            aria-label="Filter countries"
-            type="search"
-            placeholder="Filter country"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          />
-        </label>
-      </div>
-
-      <DataTable
-        rows={rows}
-        columns={columns}
-        onSort={toggleSort}
-        emptyMessage="No countries matched."
-      />
-
-      <div className="employee-table-summary">
-        Showing {rows.length} countr{rows.length === 1 ? "y" : "ies"}.
-      </div>
-    </section>
+      ]}
+      dateFields={["updated_at"]}
+      filterPlaceholder="Filter country"
+      searchAriaLabel="Filter countries"
+      filterFn={(row, search) => row.country.toLowerCase().includes(search)}
+      emptyMessage="No countries matched."
+      summaryText={(count) =>
+        `Showing ${count} countr${count === 1 ? "y" : "ies"}.`
+      }
+    />
   );
-};
-
-export default CountrySalarySummary;
+}
