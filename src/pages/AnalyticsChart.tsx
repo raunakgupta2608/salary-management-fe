@@ -56,8 +56,10 @@ export default function AnalyticsChart() {
   };
 
   return (
-    <div>
-      {loading && <p className="text-sm text-slate-500">Loading analytics...</p>}
+    <>
+      {loading && (
+        <p className="text-sm text-slate-500">Loading analytics...</p>
+      )}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && labels.length === 0 && (
@@ -67,8 +69,8 @@ export default function AnalyticsChart() {
       )}
 
       {!loading && !error && labels.length > 0 && (
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] employee-table-shell">
+          <div className="rounded-2xl bg-white p-5 shadow-sm">
             <h3 className="mb-4 text-center text-base font-semibold text-slate-900">
               Salary distribution by department
             </h3>
@@ -77,8 +79,8 @@ export default function AnalyticsChart() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-4 text-base font-semibold text-slate-900">
+          <div className="rounded-2xl bg-white p-5 shadow-sm">
+            <h3 className="mb-4 text-base font-semibold text-slate-900 text-center">
               Summary
             </h3>
             <ul className="space-y-3">
@@ -105,6 +107,6 @@ export default function AnalyticsChart() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

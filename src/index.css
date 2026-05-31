@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --text: #334155;
-  --text-h: #0f172a;
+  --text: #1d4276;
+  --text-h: #134e4a;
   --bg: #f4f8fb;
   --surface: rgba(255, 255, 255, 0.92);
   --surface-2: #f8fbfd;
   --surface-3: #eef7f7;
   --border: rgba(148, 163, 184, 0.28);
-  --code-bg: #e8f1f6;
+  --code-bg: #6cacb9;
   --accent: #0f9f8e;
   --accent-strong: #315cfd;
   --accent-bg: rgba(15, 159, 142, 0.1);
@@ -41,17 +41,27 @@
   width: 100%;
   max-width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0 auto;
   box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background:
+  min-height: 100dvh;
+  background: #acb6e5;
+  background: -webkit-linear-gradient(to right, #86fde8, #acb6e5);
+  background: linear-gradient(to right, #86fde8, #acb6e5);
+
+  /* background:
     linear-gradient(135deg, rgba(232, 246, 244, 0.9) 0%, transparent 34%),
     linear-gradient(215deg, rgba(231, 236, 255, 0.9) 0%, transparent 38%),
-    linear-gradient(180deg, var(--bg) 0%, #edf4f7 100%);
+    linear-gradient(180deg, var(--bg) 0%, #edf4f7 100%); */
 }
 
 * {
@@ -312,6 +322,20 @@ code {
   border-bottom-color: rgba(15, 159, 142, 0.16);
 }
 
+.employee-row--header button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+.employee-row--header button:hover {
+  color: var(--accent);
+}
+
 .employee-cell {
   flex: 1;
   min-width: 0;
@@ -340,6 +364,7 @@ code {
 }
 
 .employee-list {
+  height: 100%;
   overflow: auto;
   scrollbar-gutter: stable;
 }
