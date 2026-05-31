@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../api/axiosClient", () => {
+vi.mock("../../api/axiosClient", () => {
   return {
     default: {
       get: vi.fn(),

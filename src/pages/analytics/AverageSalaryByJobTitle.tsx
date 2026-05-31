@@ -49,14 +49,14 @@ const AverageSalaryByJobTitle = () => {
     });
 
   if (loading)
-    return <div className="p-4 text-sm text-slate-600">Loading...</div>;
+    return <div className="p-4 text-sm text-slate-500">Loading...</div>;
 
   if (error) return <div className="p-4 text-sm text-red-600">{error}</div>;
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium text-slate-900">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="text-lg font-semibold text-slate-900">
           Avg salary by job title
         </h3>
 
@@ -64,7 +64,7 @@ const AverageSalaryByJobTitle = () => {
           placeholder="Filter job titles"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="rounded-md border border-amber-200 bg-white px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-inner shadow-slate-200/60 outline-none transition focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 sm:w-52"
         />
       </div>
 
@@ -75,7 +75,7 @@ const AverageSalaryByJobTitle = () => {
         emptyMessage="No job titles found"
       />
 
-      <div className="text-sm text-slate-600">
+      <div className="text-sm text-slate-500">
         Showing {rows.length} job titles
       </div>
     </div>

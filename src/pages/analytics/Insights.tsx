@@ -2,24 +2,14 @@ import CountrySalarySummary from "./CountrySalarySummary";
 import AverageSalaryByJobTitle from "./AverageSalaryByJobTitle";
 
 const Insights = () => {
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
-  // async function fetchData() {
-  //   try {
-  //     // const headCount = await apiClient.get("/analytics/headcount");
-  //     // const outliersSUmmary = await apiClient.get("/analytics/outliers");
-  //     // console.log(headCount?.data?.length, outliersSUmmary?.data?.length);
-  //   } catch (error) {
-  //     console.log("abcd error", error);
-  //   }
-  // }
-
   return (
-    <div>
-      <CountrySalarySummary />
-      <AverageSalaryByJobTitle />
+    <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <CountrySalarySummary />
+      </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <AverageSalaryByJobTitle />
+      </div>
     </div>
   );
 };

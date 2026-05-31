@@ -19,7 +19,6 @@ export default function AnalyticsChart() {
     (s: RootState) => s.employees,
   );
 
-  // Aggregate total salary by department
   const totalsByDept = employees.reduce<Record<string, number>>(
     (acc, emp: Employee) => {
       const dept = emp.department || "Unknown";
@@ -34,13 +33,13 @@ export default function AnalyticsChart() {
   const values = labels.map((l) => Math.round(totalsByDept[l]));
 
   const colors = [
-    "#C68642",
-    "#E3B778",
-    "#D9A66A",
-    "#B5895E",
-    "#F1D9C5",
-    "#9C7A4C",
-    "#F7EDE2",
+    "#0F9F8E",
+    "#315CFD",
+    "#F59E0B",
+    "#7C3AED",
+    "#22C55E",
+    "#0EA5E9",
+    "#F43F5E",
   ];
 
   const data = {
@@ -50,7 +49,7 @@ export default function AnalyticsChart() {
         label: "Total salary by department",
         data: values,
         backgroundColor: labels.map((_, i) => colors[i % colors.length]),
-        borderColor: "#fff",
+        borderColor: "#ffffff",
         borderWidth: 2,
       },
     ],
@@ -58,7 +57,7 @@ export default function AnalyticsChart() {
 
   return (
     <div>
-      {loading && <p className="text-sm text-slate-500">Loading analytics…</p>}
+      {loading && <p className="text-sm text-slate-500">Loading analytics...</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && labels.length === 0 && (
@@ -68,31 +67,36 @@ export default function AnalyticsChart() {
       )}
 
       {!loading && !error && labels.length > 0 && (
-        <div className="flex">
-          <div className="w-1/2 px-[5%] rounded-xl border border-amber-100 bg-[#fffaf6] shadow-sm">
-            <h3 className="mb-3 text-sm font-semibold text-slate-800 text-center">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 className="mb-4 text-center text-base font-semibold text-slate-900">
               Salary distribution by department
             </h3>
-            <div className="mx-auto w-full max-w-[500px] h-[400px] flex justify-end">
+            <div className="mx-auto flex h-[360px] w-full max-w-[520px] items-center justify-center">
               <Pie data={data} />
             </div>
           </div>
 
-          <div className="w-1/2 px-[5%] rounded-xl border border-amber-100 bg-[#fffaf6] shadow-sm">
-            <h3 className="mb-3 text-sm font-semibold text-slate-800">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 className="mb-4 text-base font-semibold text-slate-900">
               Summary
             </h3>
             <ul className="space-y-3">
               {labels.map((label, idx) => (
-                <li key={label} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+                <li
+                  key={label}
+                  className="flex items-center justify-between gap-4 rounded-xl bg-slate-50 px-3 py-3"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
                     <span
-                      className="inline-block h-3 w-6 rounded"
+                      className="inline-block h-3 w-6 shrink-0 rounded"
                       style={{ background: colors[idx % colors.length] }}
                     />
-                    <span className="text-sm text-slate-800">{label}</span>
+                    <span className="truncate text-sm text-slate-700">
+                      {label}
+                    </span>
                   </div>
-                  <div className="text-sm font-medium text-slate-900">
+                  <div className="shrink-0 text-sm font-semibold text-slate-900">
                     {formatCurrency(values[idx])}
                   </div>
                 </li>

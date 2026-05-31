@@ -3,24 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --text: #4b453d;
-  --text-h: #1f1a14;
-  --bg: #f6eee3;
-  --surface: #fff8f0;
-  --border: rgba(162, 132, 101, 0.3);
-  --code-bg: #efe4d7;
-  --accent: #c18f69;
-  --accent-bg: rgba(193, 143, 105, 0.18);
-  --accent-border: rgba(193, 143, 105, 0.35);
-  --social-bg: rgba(194, 155, 110, 0.18);
-  --shadow: rgba(84, 64, 49, 0.08) 0 18px 55px -35px;
+  --text: #334155;
+  --text-h: #0f172a;
+  --bg: #f4f8fb;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-2: #f8fbfd;
+  --surface-3: #eef7f7;
+  --border: rgba(148, 163, 184, 0.28);
+  --code-bg: #e8f1f6;
+  --accent: #0f9f8e;
+  --accent-strong: #315cfd;
+  --accent-bg: rgba(15, 159, 142, 0.1);
+  --accent-border: rgba(15, 159, 142, 0.24);
+  --social-bg: rgba(49, 92, 253, 0.08);
+  --shadow: rgba(15, 23, 42, 0.12) 0 18px 55px -35px;
 
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
+  --sans: "Mulish", system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: "Mulish", system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  letter-spacing: 0;
   color-scheme: light;
   color: var(--text);
   background: var(--bg);
@@ -31,25 +34,6 @@
 
   @media (max-width: 1024px) {
     font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #4b453d;
-    --text-h: #1f1a14;
-    --bg: #efe4d7;
-    --border: rgba(162, 132, 101, 0.3);
-    --code-bg: #f2e7d8;
-    --accent: #c18f69;
-    --accent-bg: rgba(193, 143, 105, 0.18);
-    --accent-border: rgba(193, 143, 105, 0.35);
-    --social-bg: rgba(194, 155, 110, 0.18);
-    --shadow: rgba(84, 64, 49, 0.08) 0 18px 55px -35px;
-  }
-
-  #social .button-icon {
-    filter: none;
   }
 }
 
@@ -65,17 +49,46 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(
-      circle at top left,
-      rgba(193, 143, 105, 0.1),
-      transparent 20%
-    ),
-    radial-gradient(
-      circle at top right,
-      rgba(251, 207, 175, 0.18),
-      transparent 18%
-    ),
-    linear-gradient(180deg, #f6eee3 0%, #f2e7d5 100%);
+    linear-gradient(135deg, rgba(232, 246, 244, 0.9) 0%, transparent 34%),
+    linear-gradient(215deg, rgba(231, 236, 255, 0.9) 0%, transparent 38%),
+    linear-gradient(180deg, var(--bg) 0%, #edf4f7 100%);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 159, 142, 0.48) rgba(226, 232, 240, 0.7);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.7);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 159, 142, 0.72),
+    rgba(49, 92, 253, 0.58)
+  );
+  border: 2px solid rgba(248, 251, 253, 0.95);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 159, 142, 0.9),
+    rgba(49, 92, 253, 0.74)
+  );
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 h1,
@@ -87,7 +100,7 @@ h2 {
 
 h1 {
   font-size: 56px;
-  letter-spacing: -1.68px;
+  letter-spacing: 0;
   margin: 32px 0;
   @media (max-width: 1024px) {
     font-size: 36px;
@@ -97,7 +110,7 @@ h1 {
 h2 {
   font-size: 24px;
   line-height: 118%;
-  letter-spacing: -0.24px;
+  letter-spacing: 0;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
     font-size: 20px;
@@ -131,7 +144,7 @@ code {
 }
 
 .error-message {
-  color: #fb7185;
+  color: #be123c;
   margin: 0 0 16px;
 }
 
@@ -139,11 +152,11 @@ code {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 5%;
+  padding: 20px;
   background: var(--surface);
-  border: 1px solid rgba(162, 132, 101, 0.18);
-  border-radius: 1.75rem;
-  box-shadow: 0 18px 45px rgba(84, 64, 49, 0.06);
+  border: 1px solid var(--accent-border);
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
 }
 
 .employee-table-controls {
@@ -161,6 +174,7 @@ code {
   font-weight: 600;
   color: var(--text-h);
   min-width: 220px;
+  font-size: 14px;
 }
 
 .employee-table-controls input,
@@ -168,11 +182,19 @@ code {
   width: 100%;
   min-width: 220px;
   padding: 12px 16px;
-  border: 1px solid rgba(162, 132, 101, 0.25);
-  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  border-radius: 14px;
   font: inherit;
-  color: var(--text-h);
-  background: #f8efe3;
+  color: var(--text);
+  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+  outline: none;
+}
+
+.employee-table-controls input:focus,
+.employee-table-controls select:focus {
+  border-color: rgba(15, 159, 142, 0.75);
+  box-shadow: 0 0 0 4px rgba(15, 159, 142, 0.12);
 }
 
 .employee-pagination {
@@ -197,8 +219,8 @@ code {
 }
 
 .table-wrapper {
-  border: 1px solid rgba(162, 132, 101, 0.2);
-  border-radius: 22px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
   overflow: hidden;
   background: #ffffff;
   display: flex;
@@ -221,7 +243,7 @@ code {
 .employee-table th,
 .employee-table td {
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(162, 132, 101, 0.18);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
   text-align: left;
   font-size: 14px;
   white-space: nowrap;
@@ -230,14 +252,14 @@ code {
 }
 
 .employee-table th {
-  background: #f5e6d8;
+  background: #e8f1f6;
   position: sticky;
   top: 0;
   z-index: 1;
 }
 
 .employee-table tbody tr:nth-child(even) {
-  background: #fbf1e7;
+  background: #f8fbfd;
 }
 
 .table-body {
@@ -246,7 +268,7 @@ code {
 }
 
 .employee-table-summary {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 14px;
 }
 
@@ -273,19 +295,21 @@ code {
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
   box-sizing: border-box;
   transition: background 0.2s ease;
+  color: var(--text);
 }
 
 .employee-row:hover {
-  background: rgba(193, 143, 105, 0.12);
+  background: rgba(15, 159, 142, 0.08);
 }
 
 .employee-row--header {
-  background: #f5e6d8;
-  color: var(--text-h);
+  background: #e8f1f6;
+  color: #0f172a;
   font-weight: 700;
   position: relative;
   z-index: 10;
   flex-shrink: 0;
+  border-bottom-color: rgba(15, 159, 142, 0.16);
 }
 
 .employee-cell {
@@ -317,4 +341,9 @@ code {
 
 .employee-list {
   overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.employee-list .employee-row:nth-child(even) {
+  background: #f8fbfd;
 }
